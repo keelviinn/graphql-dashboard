@@ -1,10 +1,15 @@
-import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue } from "@chakra-ui/react";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
 export default function users() {
+  const isWideVersion = useBreakpointValue({
+    base: false,
+    lg: true
+  });
+
   return (
     <Box>
       <Header />
@@ -30,24 +35,26 @@ export default function users() {
           <Table colorScheme="whiteAlpha">
             <Thead>
               <Tr>
-                <Th px="6" color="gray.300" width="8">
+                <Th px={["4", "4", "6"]} color="gray.300" width="8">
                   <Checkbox colorScheme="purple"/>
                 </Th>
                 <Th>Usuário</Th>
-                <Th>Data de Cadastro</Th>
+                { isWideVersion && <Th>Data de Cadastro</Th> }
                 <Th width="8"></Th>
               </Tr>
             </Thead>
             <Tbody>
               <Tr>
-                <Td><Checkbox colorScheme="purple"/></Td>
+                <Td px={["4", "4", "6"]}>
+                  <Checkbox colorScheme="purple"/>
+                </Td>
                 <Td>
                   <Box>
                     <Text fontWeight="bold">Kelvin Oliveira</Text>
                     <Text fontSize="sm" color="gray.300">keelviinn@gmail.com</Text>
                   </Box>
                 </Td>
-                <Td>27 de Outubro, 2020</Td>
+                { isWideVersion && <Td>27 de Outubro, 2020</Td>}
                 <Td>
                 <Button 
                   as="a" 
@@ -56,7 +63,7 @@ export default function users() {
                   color="purple.900"
                   leftIcon={<Icon as={RiPencilLine} fontSize="16"/>}
                 >
-                  Editar
+                  { isWideVersion ? 'Editar' : '' }
                 </Button>
                 </Td>
               </Tr>
