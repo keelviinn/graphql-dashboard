@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Link from "next/link";
 import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue } from "@chakra-ui/react";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
@@ -6,6 +7,8 @@ import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
 export default function users() {
+  const [page, setPage] = useState(1);
+  console.log(page)
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true
@@ -72,7 +75,7 @@ export default function users() {
             </Tbody>
           </Table>
 
-          <Pagination />
+          <Pagination currentPage={page} totalPages={20} totalCountOfRegister={200} setPage={setPage}/>
         </Box>
       </Flex >
     </Box>
