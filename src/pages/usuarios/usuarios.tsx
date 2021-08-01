@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, Link as ChakraLink } from "@chakra-ui/react";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
@@ -8,11 +8,7 @@ import { Sidebar } from "../../components/Sidebar";
 
 export default function users() {
   const [page, setPage] = useState(1);
-  console.log(page)
-  const isWideVersion = useBreakpointValue({
-    base: false,
-    lg: true
-  });
+  const isWideVersion = useBreakpointValue({ base: false, lg: true });
 
   return (
     <Box>
@@ -55,7 +51,9 @@ export default function users() {
                 </Td>
                 <Td>
                   <Box>
-                    <Text fontWeight="bold">Kelvin Oliveira</Text>
+                    <ChakraLink color="green.400" onMouseEnter={() => console.log('prefetchQuery')}>
+                      <Text  fontWeight="bold">Kelvin Oliveira</Text>
+                    </ChakraLink>
                     <Text fontSize="sm" color="gray.300">keelviinn@gmail.com</Text>
                   </Box>
                 </Td>

@@ -1,8 +1,42 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, createHttpLink, InMemoryCache, from, fromPromise } from "@apollo/client";
+import { parseCookies } from 'nookies';
+import { onError } from "@apollo/client/link/error";
+import { setContext } from '@apollo/client/link/context';
+import { updateToken } from "../util/updateToken";
+
+const NEXT_APP_API_URL = process.env.NEXT_APP_API_URL || 'http://localhost:8080';
+
+const httpLink = createHttpLink({ 
+  uri: NEXT_APP_API_URL,
+  credentials: 'same-origin',
+});
+
+const errorLink = onError(({ graphQLErrors, operation, forward  }) => {
+  if (graphQLErrors) 
+    for (const graphQLError of graphQLErrors) {
+      if (graphQLError.extensions.code === "UNAUTHENTICATED") {
+        const oldHeaders = operation.getContext().headers;
+        const { 'ecommerce.refreshToken': refreshToken } = parseCookies();
+        return fromPromise(updateToken({ refreshToken }).catch(err => console.log(err)))
+          .filter(value => Boolean(value))
+          .flatMap(data => {
+            operation.setContext({ headers: { ...oldHeaders, authorization: data.token } });      
+            return forward(operation); 
+          });
+      }
+    }
+});
+
+const authLink = setContext((_, { headers }) => {
+  let authToken: string = '';
+  const { 'ecommerce.token': token } = parseCookies();
+  authToken = !!token ? token : '';
+	return { headers: { ...headers, authorization: authToken }};
+});
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000',
-  cache: new InMemoryCache()
+  link: from([errorLink, authLink.concat(httpLink)]),
+  cache: new InMemoryCache(),
 });
 
 export default client;

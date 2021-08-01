@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Input } from '../../components/Form/Input';
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
+import { useRouter } from "next/router";
 
 type AddUserFormData = {
   name: string;
@@ -25,12 +26,14 @@ const addUserFormSchema = Yup.object().shape({
 })
 
 export default function createUser() {
+  const router = useRouter()
   const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(addUserFormSchema)})
 
   const handleAddUser: SubmitHandler<AddUserFormData> = async (values) => {
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     console.log(values)
+    router.push('/usuarios')
   }
 
   return (
