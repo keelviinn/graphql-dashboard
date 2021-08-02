@@ -1,1 +1,1 @@
-export { LOGIN, REFRESH_TOKEN } from './auth';
+export { LOGIN, REFRESH_TOKEN, CURRENT_USER } from './auth';

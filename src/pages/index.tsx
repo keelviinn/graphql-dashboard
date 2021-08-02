@@ -1,4 +1,6 @@
 import { useContext } from 'react';
+import { GetServerSideProps } from 'next';
+import { parseCookies } from 'nookies';
 import { Flex, Button, Stack } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -21,7 +23,7 @@ export default function Home() {
   const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(signInFormSchema) });
 
   const handleSignIn: SubmitHandler<SignInFormData> = async (data) => { 
-    await signIn(data)
+    await signIn(data);
   }
 
   return (
@@ -47,4 +49,17 @@ export default function Home() {
       </Flex>
     </Flex>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { 'ecommerce.token': token } = parseCookies(ctx);
+
+  if (token) return {
+    redirect: {
+      destination: '/dashboard',
+      permanent: false
+    }
+  }
+
+  return { props: {} } 
 }

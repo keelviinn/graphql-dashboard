@@ -33,11 +33,7 @@ export const updateToken = async ({ refreshToken }): Promise<any> => {
         return res.data
       })   
   } catch (error) {
-    console.log(error)
-
     destroyCookie(undefined, 'ecommerce.token')
     destroyCookie(undefined, 'ecommerce.refreshToken')
-
-    Router.push('/')
   }
 }

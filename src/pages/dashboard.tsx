@@ -1,4 +1,6 @@
 import dynamic from 'next/dynamic';
+import { GetServerSideProps } from 'next';
+import { parseCookies } from 'nookies';
 import { ApexOptions } from "apexcharts";
 import { Box, Flex, SimpleGrid, Text, theme } from "@chakra-ui/react";
 import { Header } from "../components/Header";
@@ -74,4 +76,17 @@ export default function Dashboard() {
       </Flex>
     </Flex>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { 'ecommerce.token': token } = parseCookies(ctx);
+
+  if (!token) return {
+    redirect: {
+      destination: '/',
+      permanent: false
+    }
+  }
+
+  return { props: {} } 
 }

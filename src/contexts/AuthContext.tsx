@@ -1,13 +1,15 @@
 import { createContext, ReactNode, useState, useEffect } from "react";
 import { setCookie, parseCookies } from 'nookies';
 import Router from 'next/router';
-import { useMutation } from '@apollo/client';
-import { LOGIN } from '../services/auth';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { toast } from 'react-toastify';
+import { CURRENT_USER, LOGIN } from '../services/auth';
 
 type User = { 
   email: string;
   role: string[];
   accesAreas?: string[];
+  coverURL?: string;
 }
 
 type SignInCredentials = { 
@@ -28,19 +30,23 @@ type AuthProviderProps = {
 export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User>();
-  const [loginMutation] = useMutation(LOGIN);
+  const [user, setUser] = useState<User | null>(null);
+  const [loginMutation, { error: loginError }] = useMutation(LOGIN);
+  const [ getCurrentUserMutation, { loading, data } ] = useLazyQuery(CURRENT_USER)
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    
+    const { 'ecommerce.token': token } = parseCookies();
+    if (token) getCurrentUserMutation()
+    else if (!token) Router.push('/')
   }, [])
+
+  useEffect(() => data?.getCurrentUser && setUser(data?.getCurrentUser), [data])
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
       const { data } = await loginMutation({ variables: { loginEmail: email, loginPassword: password }});
       const { role, token, refreshToken } = data?.login;
-
       setCookie(undefined, 'ecommerce.token', token, {
         maxAge: 60 * 60 * 24 * 30, // 30 dias
         path: '/'
@@ -52,8 +58,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setUser({ email, role });
       Router.push('/dashboard');
-    } catch (error) {
-      console.log(error)
+    } catch {
+      toast.error(JSON.stringify(loginError.message))
     }
   }
 

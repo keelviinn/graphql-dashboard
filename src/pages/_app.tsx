@@ -1,8 +1,7 @@
-
-
 import { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react';
+import { ToastContainer } from 'react-toastify';
 import { theme } from '../styles/theme';
 import { SidebarDrawerProvider } from '../contexts/SidebarDrawerContext';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -15,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <SidebarDrawerProvider>
             <Component {...pageProps} />
+            <ToastContainer autoClose={3000} />
           </SidebarDrawerProvider>
         </AuthProvider>
       </ChakraProvider>

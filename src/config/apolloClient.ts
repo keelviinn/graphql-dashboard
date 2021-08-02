@@ -1,5 +1,5 @@
 import { ApolloClient, createHttpLink, InMemoryCache, from, fromPromise } from "@apollo/client";
-import { parseCookies } from 'nookies';
+import { parseCookies, destroyCookie } from 'nookies';
 import { onError } from "@apollo/client/link/error";
 import { setContext } from '@apollo/client/link/context';
 import { updateToken } from "../util/updateToken";
@@ -13,8 +13,8 @@ const httpLink = createHttpLink({
 
 const errorLink = onError(({ graphQLErrors, operation, forward  }) => {
   if (graphQLErrors) 
-    for (const graphQLError of graphQLErrors) {
-      if (graphQLError.extensions.code === "UNAUTHENTICATED") {
+    for (const { extensions, message } of graphQLErrors) {
+      if (extensions.code === "UNAUTHENTICATED" && message === "TokenExpiredError: jwt expired") {
         const oldHeaders = operation.getContext().headers;
         const { 'ecommerce.refreshToken': refreshToken } = parseCookies();
         return fromPromise(updateToken({ refreshToken }).catch(err => console.log(err)))
@@ -23,6 +23,9 @@ const errorLink = onError(({ graphQLErrors, operation, forward  }) => {
             operation.setContext({ headers: { ...oldHeaders, authorization: data.token } });      
             return forward(operation); 
           });
+      } else if (extensions.code === "UNAUTHENTICATED") {
+        destroyCookie(undefined, 'ecommerce.token')
+        destroyCookie(undefined, 'ecommerce.refreshToken')
       }
     }
 });

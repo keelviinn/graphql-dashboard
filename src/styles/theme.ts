@@ -1,5 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 export const theme = extendTheme({
   colors: {
     gray: {

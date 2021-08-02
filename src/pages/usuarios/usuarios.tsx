@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
+import { GetServerSideProps } from "next";
+import { parseCookies } from "nookies";
 import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, Link as ChakraLink } from "@chakra-ui/react";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Header } from "../../components/Header";
@@ -78,4 +80,17 @@ export default function users() {
       </Flex >
     </Box>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { 'ecommerce.token': token } = parseCookies(ctx);
+
+  if (!token) return {
+    redirect: {
+      destination: '/',
+      permanent: false
+    }
+  }
+
+  return { props: {} } 
 }
