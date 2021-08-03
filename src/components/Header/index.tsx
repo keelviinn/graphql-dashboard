@@ -36,7 +36,12 @@ export function Header() {
       { isWideVersion && <SearchBox /> }
       <Flex align="center" ml="auto">
         <NotificationsNav />
-        <Profile showProfileData={isWideVersion} avatar={user?.coverURL} />
+        <Profile 
+          showProfileData={isWideVersion} 
+          avatar={user?.coverURL} 
+          name={user?.name}
+          email={user?.email}
+        />
       </Flex>
     </Flex>
   )

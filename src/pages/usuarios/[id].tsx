@@ -1,16 +1,18 @@
 import { Box, Flex, Heading, Divider, VStack, SimpleGrid, HStack, Button } from "@chakra-ui/react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
+import Link from "next/link";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Input } from '../../components/Form/Input';
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
-import { useRouter } from "next/router";
+import { useQuery } from "@apollo/client";
+import { GET_USER } from "../../services/users";
 
-type AddUserFormData = {
+type UpdateUserFormData = {
   name: string;
   email: string;
   password: string;
@@ -27,11 +29,15 @@ const addUserFormSchema = Yup.object().shape({
 )
 })
 
-export default function createUser() {
+export default function updateUser() {
   const router = useRouter()
-  const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(addUserFormSchema)})
+  const { id } = router.query;
+  const { data } = useQuery(GET_USER, { variables: { _id: id }});
+  const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(addUserFormSchema)});
 
-  const handleAddUser: SubmitHandler<AddUserFormData> = async (values) => {
+  console.log(data);
+
+  const handleUpdateUser: SubmitHandler<UpdateUserFormData> = async (values) => {
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     console.log(values)
@@ -51,7 +57,7 @@ export default function createUser() {
           borderRadius={8} 
           bg="gray.800" 
           p={["6", "8"]}
-          onSubmit={handleSubmit(handleAddUser)}
+          onSubmit={handleSubmit(handleUpdateUser)}
         >
           <Heading size="lg" fontWeight="normal">Criar Usuário</Heading>
           <Divider my="6" borderColor="gray.700" />
