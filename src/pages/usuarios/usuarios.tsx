@@ -8,22 +8,16 @@ import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import { GET_USER, GET_USERS } from "../../services/users";
 import Layout from "../../components/Layout";
-
-interface IPageProps {
-  totalDocs: number;
-  totalPages: number;
-  page: number;
-  pagingCounter: number;
-}
+import IPaginateProps from "../../config/paginateProps";
 
 export default function users() {
   const router = useRouter();
   const pathname = router.pathname;
   const { page } = router.query;
-  const [pageProps, setPageProps] = useState<IPageProps>();
+  const [pageProps, setPageProps] = useState<IPaginateProps>();
   const setPage = useCallback((newPage = 1) => Router.push(`${pathname}?page=${newPage}`), [Router, pathname]);
   const isWideVersion = useBreakpointValue({ base: false, lg: true });
-  const variables = { page: Number(page), limit: 10 }
+  const variables = { page: Number(page), limit: 5 }
   const { data, client } = useQuery(GET_USERS, { variables });
   const prefetchData = useCallback(async (_id) => await client.query({ query: GET_USER, variables: { _id } }), [])
   
