@@ -1,22 +1,34 @@
 import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, VStack, SimpleGrid } from "@chakra-ui/react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import Link from "next/link";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { format } from 'date-fns';
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import { GET_USER, GET_USERS } from "../../services/users";
 import Layout from "../../components/Layout";
 
-export default function users() {
-  const [page, setPage] = useState(1);
-  const isWideVersion = useBreakpointValue({ base: false, lg: true });
-  const { data, loading, error, client } = useQuery(GET_USERS);
+interface IPageProps {
+  totalDocs: number;
+  totalPages: number;
+  page: number;
+  pagingCounter: number;
+}
 
-  const prefetchData = useCallback(async (_id) => {
-    return await client.query({ query: GET_USER, variables: { _id } })
-  }, [])
+export default function users() {
+  const router = useRouter();
+  const pathname = router.pathname;
+  const { page } = router.query;
+  const [pageProps, setPageProps] = useState<IPageProps>();
+  const setPage = useCallback((newPage = 1) => Router.push(`${pathname}?page=${newPage}`), [Router, pathname]);
+  const isWideVersion = useBreakpointValue({ base: false, lg: true });
+  const variables = { page: Number(page), limit: 10 }
+  const { data, client } = useQuery(GET_USERS, { variables });
+  const prefetchData = useCallback(async (_id) => await client.query({ query: GET_USER, variables: { _id } }), [])
+  
+  useEffect(() => { data && setPageProps(data?.users?.paginateProps) }, [data]);
+  useEffect(() => { setPage(page) }, [setPage]);
 
   return (
     <Layout>
@@ -54,7 +66,7 @@ export default function users() {
             </Tr>
           </Thead>
           <Tbody>
-            {data && data?.users?.list.map((user) =>
+            {data && data?.users?.docs.map((user) =>
               <Tr key={user._id}>
                 <Td px={["4", "4", "6"]}>
                   <Checkbox colorScheme="purple" />
@@ -84,7 +96,16 @@ export default function users() {
           </Tbody>
         </Table>
 
-        <Pagination currentPage={page} totalPages={20} totalCountOfRegister={200} setPage={setPage} />
+        { 
+          pageProps && 
+          <Pagination 
+            currentPage={pageProps?.page} 
+            totalPages={pageProps?.totalPages} 
+            totalDocs={pageProps?.totalDocs}
+            limit={variables?.limit} 
+            setPage={setPage} 
+          />
+        }
       </Box>
 
     </Layout>

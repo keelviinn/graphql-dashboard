@@ -67,9 +67,9 @@ export default function updateUser() {
 
         <Flex mt="8" justify="flex-end">
           <HStack spacing="4">
-            <Link href="/usuarios" passHref>
-              <Button as="a" colorScheme="whiteAlpha">Cancelar</Button>
-            </Link>
+            {/* <Link href="/usuarios" passHref> */}
+              <Button as="a" colorScheme="whiteAlpha" onClick={() => router.back()}>Cancelar</Button>
+            {/* </Link> */}
             <Button type="submit" colorScheme="purple" isLoading={formState.isSubmitting}>Salvar</Button>
           </HStack>
         </Flex>

@@ -17,7 +17,7 @@ export default function Profile({ showProfileData = true, avatar, name, email }:
         </Box>
       ) }      
 
-      <Avatar size="md" name="Kelvin Oliveira" src={avatar} />
+      <Avatar size="md" name={name} src={avatar} />
     </Flex>
   );
 }

@@ -1,9 +1,15 @@
 import { gql } from "@apollo/client";
 
 export const GET_USERS = gql`
-  query users {
-    users {
-      list {
+  query users ($page: Int, $limit: Int) {
+    users (page: $page, limit: $limit) {
+      paginateProps {
+        totalDocs
+        totalPages
+        page
+        pagingCounter
+      }
+      docs {
         _id
         name
         email
