@@ -26,7 +26,7 @@ const addUserFormSchema = Yup.object().shape({
     )
 })
 
-export default function createUser() {
+export default function CreateUser() {
   const router = useRouter();
   const { register, handleSubmit, formState } = useForm({ resolver: yupResolver(addUserFormSchema) })
   const [addUserMutation, { loading, error }] = useMutation(ADD_USER)

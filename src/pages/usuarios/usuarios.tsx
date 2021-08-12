@@ -1,25 +1,25 @@
-import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, VStack, SimpleGrid } from "@chakra-ui/react";
-import { useState, useCallback, useEffect } from "react";
+import { Box, Button, Checkbox, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, Grid, Center, GridItem } from "@chakra-ui/react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { format } from 'date-fns';
-import { RiAddLine, RiPencilLine } from "react-icons/ri";
+import { RiPencilLine } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import { GET_USER, GET_USERS } from "../../services/users";
 import Layout from "../../components/Layout";
 import IPaginateProps from "../../config/paginateProps";
+import ListHeader from "../../components/ListHeader";
 
-export default function users() {
+export default function Users() {
   const router = useRouter();
   const pathname = router.pathname;
   const { page } = router.query;
+  const isWideVersion = useBreakpointValue({ base: false, lg: true });
   const [pageProps, setPageProps] = useState<IPaginateProps>();
   const setPage = useCallback((newPage = 1) => Router.push(`${pathname}?page=${newPage}`), [Router, pathname]);
-  const isWideVersion = useBreakpointValue({ base: false, lg: true });
-  const variables = { page: Number(page), limit: 5 }
+  const variables = useMemo(() => ({ page: Number(page), limit: 5 }), [page]) 
   const { data, client } = useQuery(GET_USERS, { variables });
-  const prefetchData = useCallback(async (_id) => await client.query({ query: GET_USER, variables: { _id } }), [])
+  const prefetchData = useCallback(async (_id) => await client.query({ query: GET_USER, variables: { _id } }), [client])
   
   useEffect(() => { data && setPageProps(data?.users?.paginateProps) }, [data]);
   useEffect(() => { setPage(page) }, [setPage]);
@@ -27,28 +27,19 @@ export default function users() {
   return (
     <Layout>
       <Box flex="1" borderRadius={8} bg="gray.800" p="8">
-        <Flex mb="8" justify="space-between" align="center">
-          <Heading size="lg" fontWeight="normal">Lista de Usuários</Heading>
-          <Link href="/usuarios/novo" passHref>
-            <Button
-              as="a"
-              size="sm"
-              fontSize="sm"
-              colorScheme="purple"
-              leftIcon={<Icon as={RiAddLine} fontSize="20" />}
-            >
-              Criar novo usuário
-            </Button>
-          </Link>
-        </Flex>
+        <ListHeader pageNamePlural="Usuarios" pageNameSingle="usuário" />
 
-        <VStack spacing="8">
-          <SimpleGrid minChildWidth="240px" spacing={["6", "8"]} width="100%">
+        { pageProps && 
+          <Pagination 
+            currentPage={pageProps?.page} 
+            totalPages={pageProps?.totalPages} 
+            totalDocs={pageProps?.totalDocs}
+            limit={variables?.limit} 
+            setPage={setPage} 
+          />
+        }
 
-          </SimpleGrid>
-        </VStack>
-
-        <Table colorScheme="whiteAlpha">
+        <Table colorScheme="whiteAlpha" mt="6">
           <Thead>
             <Tr>
               <Th px={["4", "4", "6"]} color="gray.300" width="8">
@@ -90,8 +81,7 @@ export default function users() {
           </Tbody>
         </Table>
 
-        { 
-          pageProps && 
+        { pageProps && 
           <Pagination 
             currentPage={pageProps?.page} 
             totalPages={pageProps?.totalPages} 

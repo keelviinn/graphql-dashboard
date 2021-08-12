@@ -1,7 +1,6 @@
 import { Box, Flex, Heading, Divider, VStack, SimpleGrid, HStack, Button } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -27,7 +26,7 @@ const addUserFormSchema = Yup.object().shape({
     )
 })
 
-export default function updateUser() {
+export default function UpdateUser() {
   const router = useRouter()
   const { id } = router.query;
   const [updateUserMutation] = useMutation(UPDATE_USER)

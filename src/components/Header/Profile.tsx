@@ -5,9 +5,10 @@ interface ProfileProps {
   avatar?: string;
   name: string;
   email: string;
+  role: string;
 }
 
-export default function Profile({ showProfileData = true, avatar, name, email }: ProfileProps) {
+export default function Profile({ showProfileData = true, avatar, name, email, role }: ProfileProps) {
   return (
     <Flex align="center">
       { showProfileData && (

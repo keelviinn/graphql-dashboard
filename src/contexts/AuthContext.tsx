@@ -8,7 +8,7 @@ import { CURRENT_USER, LOGIN } from '../services/auth';
 type User = { 
   email: string;
   name: string;
-  role: string[];
+  role: string;
   accesAreas?: string[];
   coverURL?: string;
 }
