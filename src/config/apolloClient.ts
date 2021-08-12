@@ -15,7 +15,11 @@ const errorLink = onError(({ graphQLErrors, operation, forward  }) => {
       if (extensions.code === "UNAUTHENTICATED" && message === "TokenExpiredError: jwt expired") {
         const oldHeaders = operation.getContext().headers;
         const { 'ecommerce.refreshToken': refreshToken } = parseCookies();
-        return fromPromise(updateToken({ refreshToken }).catch(err => console.log(err)))
+        return fromPromise(updateToken({ refreshToken })
+          .catch(err => {
+            destroyCookie(undefined, 'ecommerce.token')
+            destroyCookie(undefined, 'ecommerce.refreshToken')
+          }))
           .filter(value => Boolean(value))
           .flatMap(data => {
             operation.setContext({ headers: { ...oldHeaders, authorization: data.token } });      
