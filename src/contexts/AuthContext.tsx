@@ -63,7 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser({ email, role, name, coverURL });
       Router.push('/dashboard');
     } catch {
-      toast.error(JSON.stringify(loginError.message))
+      toast.error(JSON.stringify(loginError?.message))
     }
   }
 

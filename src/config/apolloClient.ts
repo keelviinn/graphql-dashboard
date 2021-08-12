@@ -4,7 +4,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from '@apollo/client/link/context';
 import { updateToken } from "../util/updateToken";
 
-const NEXT_APP_API_URL = process.env.NEXT_APP_API_URL || 'http://localhost:8080';
+const NEXT_APP_API_URL = process.env.NEXT_APP_API_URL;
 
 const httpLink = createHttpLink({ 
   uri: NEXT_APP_API_URL,
