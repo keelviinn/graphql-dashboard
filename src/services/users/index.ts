@@ -1,1 +1,1 @@
-export { GET_USERS, GET_USER } from './users';
+export { GET_USERS, GET_USER, ADD_USER, UPDATE_USER } from './users';

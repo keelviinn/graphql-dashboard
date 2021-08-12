@@ -8,7 +8,7 @@ import { CURRENT_USER, LOGIN } from '../services/auth';
 type User = { 
   email: string;
   name: string;
-  role: string[];
+  role: string;
   accesAreas?: string[];
   coverURL?: string;
 }
@@ -33,16 +33,19 @@ export const AuthContext = createContext({} as AuthContextData);
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loginMutation, { error: loginError }] = useMutation(LOGIN);
-  const [ currentUserMutation, { loading, data } ] = useLazyQuery(CURRENT_USER)
+  const [ currentUserLazyQuery, { loading, data } ] = useLazyQuery(CURRENT_USER)
   const isAuthenticated = !!user;
 
   useEffect(() => {
     const { 'ecommerce.token': token } = parseCookies();
-    if (token) currentUserMutation()
-    else if (!token) Router.push('/')
+    if (token) currentUserLazyQuery();
+    else if (!token) Router.push('/');
   }, [])
 
-  useEffect(() => data?.currentUser && setUser(data?.currentUser), [data])
+  useEffect(() => {
+    if (user) return;
+    data && setUser({ user, ...data.currentUser })
+  }, [data])
 
   async function signIn({ email, password }: SignInCredentials) {
     try {

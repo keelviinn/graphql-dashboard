@@ -5,9 +5,10 @@ interface ProfileProps {
   avatar?: string;
   name: string;
   email: string;
+  role: string;
 }
 
-export default function Profile({ showProfileData = true, avatar, name, email }: ProfileProps) {
+export default function Profile({ showProfileData = true, avatar, name, email, role }: ProfileProps) {
   return (
     <Flex align="center">
       { showProfileData && (
@@ -17,7 +18,7 @@ export default function Profile({ showProfileData = true, avatar, name, email }:
         </Box>
       ) }      
 
-      <Avatar size="md" name="Kelvin Oliveira" src={avatar} />
+      <Avatar size="md" name={name} src={avatar} />
     </Flex>
   );
 }
