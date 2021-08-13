@@ -1,9 +1,9 @@
-import { Box, Button, Checkbox, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, Grid, Center, GridItem } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, Grid, GridItem, Avatar, Center } from "@chakra-ui/react";
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import Router, { useRouter } from "next/router";
 import { format } from 'date-fns';
-import { RiPencilLine } from "react-icons/ri";
+import { RiDeleteBackLine, RiDeleteBinLine, RiPencilLine } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import { GET_USER, GET_USERS } from "../../services/users";
 import Layout from "../../components/Layout";
@@ -38,6 +38,53 @@ export default function Users() {
             setPage={setPage} 
           />
         }
+      
+        {[1, 2, 3].map((item) => {
+          return (
+            <Grid templateColumns="55px 1fr 1fr 1fr 40px 40px" gap={2} p="3" >
+              <GridItem p="1" mt="auto" mb="auto">
+                <Avatar size="sm" />            
+              </GridItem>
+              <GridItem p="1" mt="auto" mb="auto">
+                <Text color="gray.500" fontSize="small">Nome</Text>
+                <Text fontWeight="bold">Kelvin Oliveira</Text>
+              </GridItem>
+              <GridItem p="1" mt="auto" mb="auto">
+                <Text color="gray.500" fontSize="small">Email</Text>
+                <Text fontWeight="bold">keelviinn@gmail.com</Text>
+              </GridItem>
+              <GridItem p="1" mt="auto" mb="auto">
+                <Text color="gray.500" fontSize="small">Permissão</Text>
+                <Text fontWeight="bold">administrador</Text>
+              </GridItem>
+              <GridItem p="1" mt="auto" mb="auto">
+                <Button
+                  // onMouseOver={() => prefetchData(user._id)}
+                  // onClick={() => Router.push(`/usuarios/${user._id}`)}
+                  as="a"
+                  size="sm"
+                  fontSize="sm"
+                  color="purple.900"
+                >
+                  <Icon as={RiPencilLine} fontSize="16" />
+                </Button>
+              </GridItem>
+              <GridItem p="1" mt="auto" mb="auto">
+                <Button
+                  // onMouseOver={() => prefetchData(user._id)}
+                  // onClick={() => Router.push(`/usuarios/${user._id}`)}
+                  as="a"
+                  size="sm"
+                  fontSize="sm"
+                  bgColor="gray.600"
+                  color="pink.500"
+                >
+                  <Icon as={RiDeleteBinLine} fontSize="16" />
+                </Button>
+              </GridItem>
+            </Grid>
+          )
+        })}
 
         <Table colorScheme="whiteAlpha" mt="6">
           <Thead>
