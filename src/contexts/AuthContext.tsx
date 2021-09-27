@@ -37,21 +37,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    const { 'ecommerce.token': token } = parseCookies();
-    if (token) currentUserLazyQuery();
-    else if (!token) Router.push('/');
+    const { 'ecommerce.accessToken': accessToken } = parseCookies();
+    if (accessToken) currentUserLazyQuery();
+    else if (!accessToken) Router.push('/');
   }, [])
 
   useEffect(() => {
     if (user) return;
     data && setUser({ user, ...data.currentUser })
-  }, [data])
+  }, [data, user])
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
       const { data } = await loginMutation({ variables: { loginEmail: email, loginPassword: password }});
-      const { user: { role, name, coverURL }, token, refreshToken } = data?.login;
-      setCookie(undefined, 'ecommerce.token', token, {
+      const { role, name, coverURL, accessToken, refreshToken } = data?.login;
+      setCookie(undefined, 'ecommerce.accessToken', accessToken, {
         maxAge: 60 * 60 * 24 * 30, // 30 dias
         path: '/'
       });

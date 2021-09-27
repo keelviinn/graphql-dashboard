@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue, Grid, Center, GridItem } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Icon, Table, Tbody, Th, Thead, Tr, Td, Text, useBreakpointValue } from "@chakra-ui/react";
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import Router, { useRouter } from "next/router";
