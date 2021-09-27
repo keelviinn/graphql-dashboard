@@ -52,9 +52,9 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { 'ecommerce.token': token } = parseCookies(ctx);
+  const { 'ecommerce.accessToken': accessToken } = parseCookies(ctx);
 
-  if (token) return {
+  if (accessToken) return {
     redirect: {
       destination: '/dashboard',
       permanent: false

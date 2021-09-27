@@ -13,25 +13,23 @@ export const CURRENT_USER = gql`
 `;
 
 export const LOGIN = gql`
-  mutation login($loginEmail: String, $loginPassword: String) {
+  mutation login($loginEmail: String!, $loginPassword: String!) {
     login(email: $loginEmail, password: $loginPassword) {
-      token
+      accessToken
       refreshToken
-      user {
-        name
-        email
-        coverURL
-      }
+      name
+      email
+      coverURL
     }
   }
 `;
 
 export const REFRESH_TOKEN = gql`
-  mutation refreshToken($refreshToken: String) {
+  mutation refreshToken($refreshToken: ID!) {
     refreshToken(refreshToken: $refreshToken) {
-      token
       role
+      accessToken
       refreshToken
     }
   }
-`;
+`

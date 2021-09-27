@@ -1,33 +1,20 @@
-import { Observable } from '@apollo/client';
-import axios from 'axios';
-import Router from 'next/router';
-import { setCookie, destroyCookie } from 'nookies';
+import { setCookie } from 'nookies';
 
-export const promiseToObservable = (promise) => {
-  return new Observable((subscriber) => 
-    promise.then(
-      (value) => {
-        console.log(value)
-        if (subscriber.closed) return;
-        subscriber.next(value);
-        subscriber.complete();
-      }, 
-      (err) => subscriber.error(err))
-  )
-}
+import { REFRESH_TOKEN } from '../services/auth/auth';
 
-export const updateToken = async ({ refreshToken }): Promise<any> => {
-  return axios.post('http://localhost:8080/refresh_token', { refreshToken })
-    .then(res => {
-      setCookie(undefined, 'ecommerce.token', res.data.token, {
+export async function updateToken({ client, refreshToken }: any) {
+  return client.query({ query: REFRESH_TOKEN, variables: { refreshToken } })
+    .then(({ data }: any) => {
+      const { refreshToken } = data;
+      setCookie(undefined, 'ecommerce.accessToken', refreshToken.accessToken, {
         maxAge: 60 * 60 * 24 * 30, // 30 dias
         path: '/'
       });
-      setCookie(undefined, 'ecommerce.refreshToken', res.data.refreshToken, {
+      setCookie(undefined, 'ecommerce.refreshToken', refreshToken.refreshToken, {
         maxAge: 60 * 60 * 24 * 30, // 30 dias
         path: '/'
       }); 
-
-      return res.data
-    })   
+      
+      return { accessToken: refreshToken.accessToken, refreshToken: refreshToken.accessToken };
+  });
 }
