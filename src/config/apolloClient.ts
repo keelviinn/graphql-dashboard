@@ -35,8 +35,8 @@ const errorLink = onError(({ graphQLErrors, operation, forward }): any => {
         const refreshToken = oldHeaders.refreshToken;
         return fromPromise(updateToken({ client, refreshToken })
           .catch((err: any) => {
-            // destroyCookie(undefined, 'ecommerce.accessToken');
-            // destroyCookie(undefined, 'ecommerce.refreshToken');
+            destroyCookie(undefined, 'ecommerce.accessToken');
+            destroyCookie(undefined, 'ecommerce.refreshToken');
           }))
           .filter(value => Boolean(value))
           .flatMap((data: any) => {
@@ -44,8 +44,8 @@ const errorLink = onError(({ graphQLErrors, operation, forward }): any => {
             return forward(operation); 
           });
       } else if ((extensions as any).code === "UNAUTHENTICATED") {
-        // destroyCookie(undefined, 'ecommerce.accessToken');
-        // destroyCookie(undefined, 'ecommerce.refreshToken');
+        destroyCookie(undefined, 'ecommerce.accessToken');
+        destroyCookie(undefined, 'ecommerce.refreshToken');
       }
     }
 });
